@@ -1,30 +1,26 @@
-import { bindActionCreators, Dispatch } from 'redux';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import Counter from '../components/Counter';
-import {
-  increment,
-  decrement,
-  incrementIfOdd,
-  incrementAsync
-} from '../actions/counter';
-import { counterStateType } from '../reducers/types';
 
-function mapStateToProps(state: counterStateType) {
-  return {
-    counter: state.counter
+const IncrementIfOdd = (counter: number, setCounter: Function) => {
+  return () => (counter % 2 === 1 ? setCounter(counter + 1) : '');
+};
+
+const IncrementAsync = (counter: number, setCounter: Function) => {
+  return () => {
+    setTimeout(() => {
+      setCounter(counter + 1);
+    }, 1000);
   };
-}
-
-function mapDispatchToProps(dispatch: Dispatch) {
-  return bindActionCreators(
-    {
-      increment,
-      decrement,
-      incrementIfOdd,
-      incrementAsync
-    },
-    dispatch
+};
+export default function CounterPage() {
+  const [counter, setCounter] = useState(0);
+  return (
+    <Counter
+      counter={counter}
+      decrement={() => setCounter(counter - 1)}
+      increment={() => setCounter(counter + 1)}
+      incrementIfOdd={IncrementIfOdd(counter, setCounter)}
+      incrementAsync={IncrementAsync(counter, setCounter)}
+    />
   );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
